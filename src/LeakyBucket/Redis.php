@@ -57,7 +57,7 @@ final class Redis extends Base
             'resourceLastUpdated          = now ' .
 
             'local allowAttempt = resourceBucketSize + worth <= maxBucketSize ' .
-            'if allowAttempt then resourceBucketSize = resourceBucketSize + worth end ' .
+            'if allowAttempt then resourceBucketSize = resourceBucketSize + worth allowAttempt = 1 else allowAttempt = 0 end ' .
 
             'redis.call(\'SETEX\', resourceLastUpdatedKey, ttlSecs, resourceLastUpdated) ' .
             'redis.call(\'SETEX\', resourceBucketSizeKey, ttlSecs, resourceBucketSize) ' .

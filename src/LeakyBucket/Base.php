@@ -27,10 +27,7 @@ abstract class Base implements Throttler
      */
     protected $leakRateDuration;
 
-    public function __construct(
-        int $maxBucketSize,
-        int $leakRateValue,
-        int $leakRateDuration)
+    public function __construct(int $maxBucketSize, int $leakRateValue, int $leakRateDuration)
     {
         $this->maxBucketSize    = $maxBucketSize;
         $this->leakRateValue    = $leakRateValue;

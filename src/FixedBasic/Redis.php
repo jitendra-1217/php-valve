@@ -30,11 +30,18 @@ final class Redis extends Base
 
         list($hits, $ttlSecsRemaining) = $this->redis->eval(...$args);
 
+        // Following logic could easily be offloaded to LUA script below
+        $allowed    = intval($hits <= $this->limit);
+        $remaining  = max(0, $this->limit - $hits);
+        $reset      = millitime() + ($ttlSecsRemaining * 1000);
+        $retryAfter = $allowed ? -1 : $reset;
+
         return [
-            intval($hits <= $this->limit),
+            $allowed,
             $this->limit,
-            max(0, $this->limit - $hits),
-            millitime() + ($ttlSecsRemaining * 1000),
+            $remaining,
+            $reset,
+            $retryAfter,
         ];
     }
 

@@ -37,4 +37,4 @@ $limiter->attempt('ip:resource');
 
 - __Leaky Bucket__
 
-  Rate limit attempt to a resource via standard leaky bucket logic. E.g. With max burst of 200 and refill rate of 10 requests per second.
+  Rate limit attempt to a resource via standard leaky bucket logic. E.g. With max burst of 200 and leak rate of 10 requests per second.

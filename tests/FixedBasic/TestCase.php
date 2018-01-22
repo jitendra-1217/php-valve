@@ -15,12 +15,38 @@ abstract class TestCase extends \Jitendra\PhpValveTests\TestCase
         // All attempts up to $limiterLimit withing current window must pass
         foreach (range(1, $limiterLimit) as $i)
         {
-            $this->makeAssertionsPerAttempt($limiter, $resource, 1, 1, $limiterLimit, $limiterLimit - $i, millitime() + $limiterWindow);
+            $this->makeAssertionsPerAttempt(
+                $limiter,
+                $resource,
+                1,
+                1,
+                $limiterLimit,
+                $limiterLimit - $i,
+                millitime() + $limiterWindow,
+                -1);
         }
+
         // Subsequent attempt in current window must fail
-        $this->makeAssertionsPerAttempt($limiter, $resource, 1, 0, $limiterLimit, 0, millitime() + $limiterWindow);
+        $this->makeAssertionsPerAttempt(
+            $limiter,
+            $resource,
+            1,
+            0,
+            $limiterLimit,
+            0,
+            millitime() + $limiterWindow,
+            millitime() + $limiterWindow);
+
         // Once new window kicks in, new attempt must pass
         sleep($limiterWindow/1000);
-        $this->makeAssertionsPerAttempt($limiter, $resource, 1, 1, $limiterLimit, $limiterLimit - 1, millitime() + $limiterWindow);
+        $this->makeAssertionsPerAttempt(
+            $limiter,
+            $resource,
+            1,
+            1,
+            $limiterLimit,
+            $limiterLimit - 1,
+            millitime() + $limiterWindow,
+            -1);
     }
 }

@@ -14,6 +14,7 @@ interface Limiter
      *                               - X-RateLimit-Limit
      *                               - X-RateLimit-Remaining
      *                               - X-RateLimit-Reset (in milliseconds)
+     *                               - X-RateLimit-RetryAfter
      */
     public function attempt(string $resource, int $worth = 1): array;
 }

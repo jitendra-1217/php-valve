@@ -20,6 +20,14 @@ final class RedisTest extends TestCase
         $limiterWindow = $limiter->window();
         $resource      = (string) rand(0, 10000);
 
-        $this->makeAssertionsPerAttempt($limiter, $resource, 2, 1, $limiterLimit, $limiterLimit - 2, millitime() + $limiterWindow);
+        $this->makeAssertionsPerAttempt(
+            $limiter,
+            $resource,
+            2,
+            1,
+            $limiterLimit,
+            $limiterLimit - 2,
+            millitime() + $limiterWindow,
+            -1);
     }
 }

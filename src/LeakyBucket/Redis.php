@@ -4,6 +4,8 @@ namespace Jitendra\PhpValve\LeakyBucket;
 
 final class Redis extends Base
 {
+    const KEY_PREFIX = 'JPVLR:';
+
     /**
      * @var \Predis\Client
      */
@@ -26,6 +28,7 @@ final class Redis extends Base
             $this->maxBucketSize,
             $this->leakRateValue,
             $this->leakRateDuration,
+            $this->leakFullTime(),
             millitime(),
             $worth,
         ];
@@ -41,9 +44,10 @@ final class Redis extends Base
             'local maxBucketSize          = tonumber(ARGV[1]) ' .
             'local leakRateValue          = tonumber(ARGV[2]) ' .
             'local leakRateDuration       = tonumber(ARGV[3]) ' .
-            'local now                    = tonumber(ARGV[4]) ' .
-            'local worth                  = tonumber(ARGV[5]) ' .
-            'local leakFullTime           = math.ceil((maxBucketSize * leakRateDuration)/leakRateValue) ' .
+            'local leakFullTime           = tonumber(ARGV[4]) ' .
+            'local now                    = tonumber(ARGV[5]) ' .
+            'local worth                  = tonumber(ARGV[6]) ' .
+
             'local ttlSecs                = math.ceil(leakFullTime/1000) ' .
             'local resourceLastUpdated    = tonumber(redis.call(\'GET\', resourceLastUpdatedKey)) if resourceLastUpdated == nil then resourceLastUpdated = 0 end ' .
             'local resourceBucketSize     = tonumber(redis.call(\'GET\', resourceBucketSizeKey)) if resourceBucketSize == nil then resourceBucketSize = 0 end ' .
@@ -62,11 +66,11 @@ final class Redis extends Base
 
     public function resourceLastUpdatedKey(string $resource): string
     {
-        return "jpvlr:{$resource}:t";
+        return self::KEY_PREFIX . $resource . ':t';
     }
 
     public function resourceBucketSizeKey(string $resource): string
     {
-        return "jpvlr:{$resource}:s";
+        return self::KEY_PREFIX . $resource . ':s';
     }
 }

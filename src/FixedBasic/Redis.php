@@ -4,6 +4,8 @@ namespace Jitendra\PhpValve\FixedBasic;
 
 final class Redis extends Base
 {
+    const KEY_PREFIX = 'JPVFBR:';
+
     /**
      * @var \Predis\Client
      */
@@ -52,6 +54,6 @@ final class Redis extends Base
 
     public function resourceKey(string $resource): string
     {
-        return "jpvdr:{$resource}";
+        return self::KEY_PREFIX . $resource;
     }
 }

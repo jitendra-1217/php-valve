@@ -13,7 +13,7 @@ interface Throttler
      *                               - If attempt is to be allowed or not
      *                               - Limit
      *                               - Remaining
-     *                               - Approximate ResetAt
+     *                               - Approximate Reset
      */
     public function attempt(string $resource, int $worth = 1): array;
 }

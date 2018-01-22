@@ -4,11 +4,6 @@ namespace Jitendra\PhpValve\LeakyBucket;
 
 final class Redis extends Base
 {
-    // Every resource has corresponding 2 REDIS keys to hold last
-    // updated time stamp and actual bucket size respectively.
-    const KEY1_SUFFIX = 't';
-    const KEY2_SUFFIX = 's';
-
     /**
      * @var \Predis\Client
      */
@@ -26,19 +21,19 @@ final class Redis extends Base
         $args = [
             $this->script(),
             2,
-            $resource . self::KEY1_SUFFIX,
-            $resource . self::KEY2_SUFFIX,
+            $this->resourceLastUpdatedKey($resource),
+            $this->resourceBucketSizeKey($resource),
             $this->maxBucketSize,
             $this->leakRateValue,
             $this->leakRateDuration,
-            (int) round(microtime(true) * 1000),
+            millitime(),
             $worth,
         ];
 
         return $this->redis->eval(...$args);
     }
 
-    private function script(): string
+    public function script(): string
     {
         return '' .
             'local resourceLastUpdatedKey = KEYS[1] ' .
@@ -63,5 +58,15 @@ final class Redis extends Base
             'redis.call(\'SETEX\', resourceBucketSizeKey, ttlSecs, resourceBucketSize) ' .
 
             'return { allowAttempt, maxBucketSize, maxBucketSize - resourceBucketSize, now + leakFullTime }';
+    }
+
+    public function resourceLastUpdatedKey(string $resource): string
+    {
+        return "{$resource}:t";
+    }
+
+    public function resourceBucketSizeKey(string $resource): string
+    {
+        return "{$resource}:s";
     }
 }

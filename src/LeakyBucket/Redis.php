@@ -62,11 +62,11 @@ final class Redis extends Base
 
     public function resourceLastUpdatedKey(string $resource): string
     {
-        return "{$resource}:t";
+        return "jpvlr:{$resource}:t";
     }
 
     public function resourceBucketSizeKey(string $resource): string
     {
-        return "{$resource}:s";
+        return "jpvlr:{$resource}:s";
     }
 }

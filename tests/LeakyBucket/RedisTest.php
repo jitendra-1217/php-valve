@@ -2,24 +2,23 @@
 
 namespace Jitendra\PhpValveTests\LeakyBucket;
 
+use Jitendra\PhpValve\LeakyBucket;
+
 final class RedisTest extends TestCase
 {
     public function testLeakyBucket()
     {
-        $this->makeAssertions(100, 1, 1000); // Leak at 1 per second with burst 100
+        $limiter = new LeakyBucket\Redis(100, 1, 1000);
+        $this->makeAssertions($limiter);
     }
 
     public function testLeakyBucketWithNonDefaultWorth()
     {
-        // Instantiate limiter with predefined arguments
-        $resource = (string) rand(0, 10000);
-        list($maxBucketSize, $leakRateValue, $leakRateDuration) = [100, 1, 1000];
-        $limiter = new \Jitendra\PhpValve\LeakyBucket\Redis($maxBucketSize, $leakRateValue, $leakRateDuration);
+        $limiter              = new LeakyBucket\Redis(100, 1, 1000);
+        $resource             = (string) rand(0, 10000);
+        $limiterMaxBucketSize = $limiter->maxBucketSize();
+        $limiterLeakFullTime  = $limiter->leakFullTime();
 
-        list($allowed, $limit, $remaining, $reset) = $limiter->attempt($resource, 10);
-        $this->assertSame(1, $allowed);
-        $this->assertSame($maxBucketSize, $limit);
-        $this->assertSame($maxBucketSize - 10, $remaining);
-        $this->assertEquals(millitime() + 100000, $reset, '', 20);
+        $this->makeAssertionsPerAttempt($limiter, $resource, 2, 1, $limiterMaxBucketSize, $limiterMaxBucketSize - 2, millitime() + $limiterLeakFullTime);
     }
 }

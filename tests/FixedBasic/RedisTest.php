@@ -18,9 +18,8 @@ final class RedisTest extends TestCase
         $limiter       = new FixedBasic\Redis(1000, 10);
         $limiterLimit  = $limiter->limit();
         $limiterWindow = $limiter->window();
-        $now           = millitime();
         $resource      = (string) rand(0, 10000);
 
-        $this->makeAssertionsPerAttempt($limiter, $resource, 2, 1, $limiterLimit, $limiterLimit - 2, $now + $limiterWindow);
+        $this->makeAssertionsPerAttempt($limiter, $resource, 2, 1, $limiterLimit, $limiterLimit - 2, millitime() + $limiterWindow);
     }
 }

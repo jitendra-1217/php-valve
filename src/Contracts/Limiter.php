@@ -2,7 +2,7 @@
 
 namespace Jitendra\PhpValve\Contracts;
 
-interface Throttler
+interface Limiter
 {
     /**
      * Attempts access to a throttled resource.

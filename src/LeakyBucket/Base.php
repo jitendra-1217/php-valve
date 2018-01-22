@@ -2,9 +2,9 @@
 
 namespace Jitendra\PhpValve\LeakyBucket;
 
-use Jitendra\PhpValve\Contracts\Throttler;
+use Jitendra\PhpValve\Contracts\Limiter;
 
-abstract class Base implements Throttler
+abstract class Base implements Limiter
 {
     /**
      * Max bucket size.
@@ -32,5 +32,25 @@ abstract class Base implements Throttler
         $this->maxBucketSize    = $maxBucketSize;
         $this->leakRateValue    = $leakRateValue;
         $this->leakRateDuration = $leakRateDuration;
+    }
+
+    public function maxBucketSize(): int
+    {
+        return $this->maxBucketSize;
+    }
+
+    public function leakRateValue(): int
+    {
+        return $this->leakRateValue;
+    }
+
+    public function leakRateDuration(): int
+    {
+        return $this->leakRateDuration;
+    }
+
+    public function leakFullTime(): int
+    {
+        return ceil($this->maxBucketSize * $this->leakRateDuration / $this->leakRateValue);
     }
 }

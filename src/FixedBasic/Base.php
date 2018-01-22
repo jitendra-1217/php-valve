@@ -2,9 +2,9 @@
 
 namespace Jitendra\PhpValve\FixedBasic;
 
-use Jitendra\PhpValve\Contracts\Throttler;
+use Jitendra\PhpValve\Contracts\Limiter;
 
-abstract class Base implements Throttler
+abstract class Base implements Limiter
 {
     /**
      * Window size in milliseconds.

@@ -10,10 +10,10 @@ interface Limiter
      * @param  string      $resource
      * @param  int|integer $worth
      * @return array                 [bool, int, int, int]
-     *                               - If attempt is to be allowed or not
-     *                               - Limit
-     *                               - Remaining
-     *                               - Approximate Reset
+     *                               - Allowed or not?
+     *                               - X-RateLimit-Limit
+     *                               - X-RateLimit-Remaining
+     *                               - X-RateLimit-Reset (in milliseconds)
      */
     public function attempt(string $resource, int $worth = 1): array;
 }

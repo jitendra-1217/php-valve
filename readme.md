@@ -1,12 +1,10 @@
-[![Build Status](https://travis-ci.org/jitendra-1217/php-valve.svg?branch=master)](https://travis-ci.org/jitendra-1217/php-valve)
+[![Build Status](https://travis-ci.org/jitendra-1217/php-valve.svg?branch=master)](https://travis-ci.org/jitendra-1217/php-valve) [![Latest Version](https://img.shields.io/github/release/jitendra-1217/php-valve.svg)](https://github.com/jitendra-1217/php-valve/releases)
 
 ## php-valve
 
-Resource rate limiting/throttling.
+Resource or API rate limiting/throttling.
 
 ## Installation
-
-Add git source in composer.json 's repositories list and install using composer:
 
 ```
 composer require jitendra/php-valve
@@ -26,6 +24,7 @@ $limiter->attempt('ip:resource');
 //     200,            // X-RateLimit-Limit
 //     199,            // X-RateLimit-Remaining
 //     1516612980700,  // X-RateLimit-Reset (in milliseconds)
+//     1516612980700,  // X-RateLimit-RetryAfter (in milliseconds, -1 if not rate limited)
 // ]
 ```
 
@@ -33,8 +32,12 @@ $limiter->attempt('ip:resource');
 
 - __Fixed Basic__
 
+  (Redis)
+
   Rate limit attempt to a resource by specifying limit for fixed duration. E.g. 100 attempts per minute.
 
 - __Leaky Bucket__
+
+  (Redis)
 
   Rate limit attempt to a resource via standard leaky bucket logic. E.g. With max burst of 200 and leak rate of 10 requests per second.

@@ -1,15 +1,16 @@
 {
     "name": "jitendra/php-valve",
-    "description": "Resource rate limiting/throttling",
+    "description": "Resource or API rate limiting/throttling",
     "keywords": [
         "php",
         "rate-limiting",
-        "api-throttling"
+        "api-throttling",
+        "redis"
     ],
     "require": {
-        "predis/predis": "^1.1"
+        "predis/predis": "^1.1",
+        "php": "^7.0"
     },
-
     "autoload": {
         "psr-4": {
             "Jitendra\\PhpValve\\": "src/",

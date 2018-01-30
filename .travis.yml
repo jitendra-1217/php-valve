@@ -1,0 +1,11 @@
+language: php
+php:
+  - '7.0'
+services:
+    - redis-server
+install:
+  - composer install --dev
+before_script:
+  - cp phpunit.xml.dist phpunit.xml
+script:
+  - ./vendor/bin/phpunit --debug

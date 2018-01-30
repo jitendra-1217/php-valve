@@ -4,7 +4,7 @@ namespace Jitendra\PhpValve\LeakyBucket;
 
 final class Redis extends Base
 {
-    const KEY_PREFIX = 'JPVLR:';
+    const KEY_PREFIX = 'pv2:';
 
     /**
      * @var \Predis\Client

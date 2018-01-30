@@ -4,7 +4,7 @@ namespace Jitendra\PhpValve\FixedBasic;
 
 final class Redis extends Base
 {
-    const KEY_PREFIX = 'JPVFBR:';
+    const KEY_PREFIX = 'pv1:';
 
     /**
      * @var \Predis\Client

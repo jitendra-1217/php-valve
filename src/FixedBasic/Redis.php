@@ -2,11 +2,11 @@
 
 namespace Jitendra\PhpValve\FixedBasic;
 
-final class Redis extends Base
+class Redis extends Base
 {
-    const KEY_PREFIX = 'pv1:';
-
     /**
+     * Redis client
+     *
      * @var \Predis\Client
      */
     protected $redis;
@@ -21,9 +21,9 @@ final class Redis extends Base
     public function attempt(string $resource, int $worth = 1): array
     {
         $args = [
-            $this->script(),
+            file_get_contents(__DIR__ . '/redis.lua'),
             1,
-            $this->resourceKey($resource),
+            $this->keyPrefix . $resource,
             ceil($this->window/1000),
             $worth,
         ];
@@ -43,24 +43,5 @@ final class Redis extends Base
             $reset,
             $retryAfter,
         ];
-    }
-
-    public function script(): string
-    {
-        return '' .
-            'local resourceKey      = KEYS[1] ' .
-            'local ttlSecs          = tonumber(ARGV[1]) ' .
-            'local worth            = tonumber(ARGV[2]) ' .
-            'local ttlSecsRemaining = ttlSecs ' .
-
-            'local hits = tonumber(redis.call(\'INCRBY\', resourceKey, worth)) ' .
-            'if hits == worth then redis.call(\'setex\', resourceKey, ttlSecs, worth) else ttlSecsRemaining = tonumber(redis.call(\'TTL\', resourceKey)) end ' .
-
-            'return { hits, ttlSecsRemaining }';
-    }
-
-    public function resourceKey(string $resource): string
-    {
-        return self::KEY_PREFIX . $resource;
     }
 }

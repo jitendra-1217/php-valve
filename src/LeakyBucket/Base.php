@@ -3,9 +3,12 @@
 namespace Jitendra\PhpValve\LeakyBucket;
 
 use Jitendra\PhpValve\Contracts\Limiter;
+use Jitendra\PhpValve\Traits\HasAttributes;
 
 abstract class Base implements Limiter
 {
+    use HasAttributes;
+
     /**
      * Max bucket size.
      *

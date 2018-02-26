@@ -3,6 +3,7 @@
 namespace Jitendra\PhpValveTests\LeakyBucket;
 
 use Jitendra\PhpValve\LeakyBucket;
+use Jitendra\PhpValve\Base\Response;
 
 final class RedisTest extends TestCase
 {
@@ -25,14 +26,7 @@ final class RedisTest extends TestCase
         $limiterLeakFullTime  = $limiter->getLeakFullTime();
         $resource             = (string) rand(0, 10000);
 
-        $this->makeAssertionsPerAttempt(
-            $limiter,
-            $resource,
-            2,
-            1,
-            $limiterMaxBucketSize,
-            $limiterMaxBucketSize - 2,
-            time() + $limiterLeakFullTime,
-            -1);
+        $expected = new Response(1, $limiterMaxBucketSize, $limiterMaxBucketSize - 2, time() + $limiterLeakFullTime, -1);
+        $this->attemptAndAssert($limiter, $resource, 2, $expected);
     }
 }

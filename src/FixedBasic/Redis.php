@@ -2,6 +2,8 @@
 
 namespace Jitendra\PhpValve\FixedBasic;
 
+use Jitendra\PhpValve\Base\Response;
+
 class Redis extends Base
 {
     /**
@@ -18,7 +20,7 @@ class Redis extends Base
         $this->redis = $redis ?: new \Predis\Client;
     }
 
-    public function attempt(string $resource, int $worth = 1): array
+    public function attempt(string $resource, int $worth = 1): Response
     {
         $args = [
             file_get_contents(__DIR__ . '/redis.lua'),
@@ -36,12 +38,6 @@ class Redis extends Base
         $reset      = time() + $ttl;
         $retryAfter = $allowed ? -1 : $reset;
 
-        return [
-            $allowed,
-            $this->limit,
-            $remaining,
-            $reset,
-            $retryAfter,
-        ];
+        return new Response($allowed, $this->limit, $remaining, $reset, $retryAfter);
     }
 }

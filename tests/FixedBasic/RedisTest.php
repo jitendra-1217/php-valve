@@ -3,6 +3,7 @@
 namespace Jitendra\PhpValveTests\FixedBasic;
 
 use Jitendra\PhpValve\FixedBasic;
+use Jitendra\PhpValve\Base\Response;
 
 final class RedisTest extends TestCase
 {
@@ -25,14 +26,7 @@ final class RedisTest extends TestCase
         $limiterWindow = $limiter->getWindow();
         $resource      = (string) rand(0, 10000);
 
-        $this->makeAssertionsPerAttempt(
-            $limiter,
-            $resource,
-            2,
-            1,
-            $limiterLimit,
-            $limiterLimit - 2,
-            time() + $limiterWindow,
-            -1);
+        $expected = new Response(1, $limiterLimit, $limiterLimit - 2, time() + $limiterWindow, -1);
+        $this->attemptAndAssert($limiter, $resource, 2, $expected);
     }
 }

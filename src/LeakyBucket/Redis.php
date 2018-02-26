@@ -2,6 +2,8 @@
 
 namespace Jitendra\PhpValve\LeakyBucket;
 
+use Jitendra\PhpValve\Base\Response;
+
 class Redis extends Base
 {
     /**
@@ -16,7 +18,7 @@ class Redis extends Base
         $this->redis = $redis ?: new \Predis\Client;
     }
 
-    public function attempt(string $resource, int $worth = 1): array
+    public function attempt(string $resource, int $worth = 1): Response
     {
         $args = [
             file_get_contents(__DIR__ . '/redis.lua'),
@@ -31,6 +33,8 @@ class Redis extends Base
             $worth,
         ];
 
-        return $this->redis->eval(...$args);
+        $response = $this->redis->eval(...$args);
+
+        return new Response(...$response);
     }
 }

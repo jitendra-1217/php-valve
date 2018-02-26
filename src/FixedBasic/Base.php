@@ -10,7 +10,7 @@ abstract class Base implements Limiter
     use HasAttributes;
 
     /**
-     * Window size in milliseconds.
+     * Window size in seconds.
      *
      * @var int
      */
@@ -29,12 +29,12 @@ abstract class Base implements Limiter
         $this->limit     = $limit;
     }
 
-    public function window(): int
+    public function getWindow(): int
     {
         return $this->window;
     }
 
-    public function limit(): int
+    public function getLimit(): int
     {
         return $this->limit;
     }

@@ -1,33 +1,32 @@
 -- Gets keys and arguments from command
-local resourceLastUpdatedKey = KEYS[1]
-local resourceBucketSizeKey = KEYS[2]
-local maxBucketSize = tonumber(ARGV[1])
-local leakRateValue = tonumber(ARGV[2])
+local lastUpdatedKey   = KEYS[1]
+local bucketSizeKey    = KEYS[2]
+local maxBucketSize    = tonumber(ARGV[1])
+local leakRateValue    = tonumber(ARGV[2])
 local leakRateDuration = tonumber(ARGV[3])
-local leakFullTime = tonumber(ARGV[4])
-local now = tonumber(ARGV[5])
-local worth = tonumber(ARGV[6])
+local leakFullTime     = tonumber(ARGV[4])
+local now              = tonumber(ARGV[5])
+local worth            = tonumber(ARGV[6])
 
-local ttlSecs = math.ceil(leakFullTime/1000)
 local retryAfter = -1
 
 -- Reads values of 2 keys - last updated and current bucket size against key
-local resourceLastUpdated = tonumber(redis.call('get', resourceLastUpdatedKey))
-if resourceLastUpdated == nil then resourceLastUpdated = 0 end
+local lastUpdated = tonumber(redis.call('get', lastUpdatedKey))
+if lastUpdated == nil then lastUpdated = 0 end
 
-local resourceBucketSize = tonumber(redis.call('get', resourceBucketSizeKey))
-if resourceBucketSize == nil then resourceBucketSize = 0 end
+local bucketSize = tonumber(redis.call('get', bucketSizeKey))
+if bucketSize == nil then bucketSize = 0 end
 
 -- Calculates units that should have been leaked between time the key got last updated and now
-local leak = math.floor((now - resourceLastUpdated) * leakRateValue / leakRateDuration)
-resourceBucketSize = math.max(0, resourceBucketSize - leak)
-resourceLastUpdated = now
+local leak = math.floor((now - lastUpdated) * leakRateValue / leakRateDuration)
+bucketSize = math.max(0, bucketSize - leak)
+lastUpdated = now
 
 -- Determine now if attempt for worth should be allowed or not. If allowed fill
 -- in worth unit in the bucket and change related vars accordingly
-local allowAttempt = resourceBucketSize + worth <= maxBucketSize
+local allowAttempt = bucketSize + worth <= maxBucketSize
 if allowAttempt then
-      resourceBucketSize = resourceBucketSize + worth
+      bucketSize = bucketSize + worth
       allowAttempt = 1
 else
       allowAttempt = 0
@@ -35,8 +34,8 @@ else
 end
 
 -- Finally set the values and TTL for the 2 REDIS keys
-redis.call('setex', resourceLastUpdatedKey, ttlSecs, resourceLastUpdated)
-redis.call('setex', resourceBucketSizeKey, ttlSecs, resourceBucketSize)
+redis.call('setex', lastUpdatedKey, leakFullTime, lastUpdated)
+redis.call('setex', bucketSizeKey, leakFullTime, bucketSize)
 
 -- Returns:
 -- - Whether to allow attempt
@@ -47,7 +46,7 @@ redis.call('setex', resourceBucketSizeKey, ttlSecs, resourceBucketSize)
 return {
       allowAttempt,
       maxBucketSize,
-      maxBucketSize - resourceBucketSize,
+      maxBucketSize - bucketSize,
       now + leakFullTime,
       retryAfter
 }

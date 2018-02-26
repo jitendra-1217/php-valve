@@ -23,17 +23,17 @@ class Redis extends Base
         $args = [
             file_get_contents(__DIR__ . '/redis.lua'),
             1,
-            $this->keyPrefix . $resource,
-            ceil($this->window/1000),
+            $this->prefix . $resource,
+            $this->window,
             $worth,
         ];
 
-        list($hits, $ttlSecsRemaining) = $this->redis->eval(...$args);
+        list($hits, $ttl) = $this->redis->eval(...$args);
 
         // Following logic could easily be offloaded to LUA script below
         $allowed    = intval($hits <= $this->limit);
         $remaining  = max(0, $this->limit - $hits);
-        $reset      = millitime() + ($ttlSecsRemaining * 1000);
+        $reset      = time() + $ttl;
         $retryAfter = $allowed ? -1 : $reset;
 
         return [

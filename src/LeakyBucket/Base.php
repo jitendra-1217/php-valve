@@ -24,7 +24,7 @@ abstract class Base implements Limiter
     protected $leakRateValue;
 
     /**
-     * Bucket leak rate duration in milliseconds.
+     * Bucket leak rate duration in seconds.
      *
      * @var int
      */
@@ -37,23 +37,29 @@ abstract class Base implements Limiter
         $this->leakRateDuration = $leakRateDuration;
     }
 
-    public function maxBucketSize(): int
+    public function getMaxBucketSize(): int
     {
         return $this->maxBucketSize;
     }
 
-    public function leakRateValue(): int
+    public function getLeakRateValue(): int
     {
         return $this->leakRateValue;
     }
 
-    public function leakRateDuration(): int
+    public function getLeakRateDuration(): int
     {
         return $this->leakRateDuration;
     }
 
-    public function leakFullTime(): int
+    /**
+     * Returns total time it would take to completely leak the bucket, used
+     * in calculating retry-after (now + this value).
+     *
+     * @return int
+     */
+    public function getLeakFullTime(): int
     {
-        return ceil($this->maxBucketSize * $this->leakRateDuration / $this->leakRateValue);
+        return ceil(($this->maxBucketSize * $this->leakRateDuration) / $this->leakRateValue);
     }
 }

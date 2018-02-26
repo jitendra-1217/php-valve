@@ -3,25 +3,25 @@
 namespace Jitendra\PhpValve\Traits;
 
 /**
- * Command attributes, getters & setters for throttlers classes
+ * Common attributes, getters & setters for limiters classes
  */
 trait HasAttributes
 {
     /**
-     * Redis key prefix. Useful if multiple limiters are being
-     * used on same identifier.
+     * Resource key prefix.
+     * Useful if multiple limiters are being used on same identifier.
      *
      * @var string
      */
-    protected $keyPrefix = 'pv:';
+    protected $prefix = 'pv:';
 
-    public function keyPrefix(): string
+    public function getPrefix(): string
     {
-        return $this->keyPrefix;
+        return $this->prefix;
     }
 
-    public function setKeyPrefix(string $prefix)
+    public function setPrefix(string $prefix)
     {
-        $this->keyPrefix = $prefix;
+        $this->prefix = $prefix;
     }
 }

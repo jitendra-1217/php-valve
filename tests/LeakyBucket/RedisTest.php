@@ -6,18 +6,23 @@ use Jitendra\PhpValve\LeakyBucket;
 
 final class RedisTest extends TestCase
 {
+    public function tearDown()
+    {
+        (new \Predis\Client)->flushall();
+    }
+
     public function testLeakyBucket()
     {
-        $limiter = new LeakyBucket\Redis(100, 1, 1000);
+        $limiter = new LeakyBucket\Redis(100, 1, 1);
 
         $this->makeAssertions($limiter);
     }
 
     public function testLeakyBucketWithNonDefaultWorth()
     {
-        $limiter              = new LeakyBucket\Redis(100, 1, 1000);
-        $limiterMaxBucketSize = $limiter->maxBucketSize();
-        $limiterLeakFullTime  = $limiter->leakFullTime();
+        $limiter              = new LeakyBucket\Redis(100, 1, 1);
+        $limiterMaxBucketSize = $limiter->getMaxBucketSize();
+        $limiterLeakFullTime  = $limiter->getLeakFullTime();
         $resource             = (string) rand(0, 10000);
 
         $this->makeAssertionsPerAttempt(
@@ -27,7 +32,7 @@ final class RedisTest extends TestCase
             1,
             $limiterMaxBucketSize,
             $limiterMaxBucketSize - 2,
-            millitime() + $limiterLeakFullTime,
+            time() + $limiterLeakFullTime,
             -1);
     }
 }

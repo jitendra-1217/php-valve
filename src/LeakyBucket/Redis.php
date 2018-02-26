@@ -21,13 +21,13 @@ class Redis extends Base
         $args = [
             file_get_contents(__DIR__ . '/redis.lua'),
             2,
-            "{$this->keyPrefix}{$resource}:t",
-            "{$this->keyPrefix}{$resource}:s",
+            "{$this->prefix}{$resource}:t",
+            "{$this->prefix}{$resource}:s",
             $this->maxBucketSize,
             $this->leakRateValue,
             $this->leakRateDuration,
-            $this->leakFullTime(),
-            millitime(),
+            $this->getLeakFullTime(),
+            time(),
             $worth,
         ];
 

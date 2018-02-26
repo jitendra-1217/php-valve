@@ -6,18 +6,23 @@ use Jitendra\PhpValve\FixedBasic;
 
 final class RedisTest extends TestCase
 {
+    public function tearDown()
+    {
+        (new \Predis\Client)->flushall();
+    }
+
     public function testFixedBasic()
     {
-        $limiter = new FixedBasic\Redis(1000, 10);
+        $limiter = new FixedBasic\Redis(1, 10);
 
         $this->makeAssertions($limiter);
     }
 
     public function testFixedBasicWithNonDefaultWorth()
     {
-        $limiter       = new FixedBasic\Redis(1000, 10);
-        $limiterLimit  = $limiter->limit();
-        $limiterWindow = $limiter->window();
+        $limiter       = new FixedBasic\Redis(1, 10);
+        $limiterLimit  = $limiter->getLimit();
+        $limiterWindow = $limiter->getWindow();
         $resource      = (string) rand(0, 10000);
 
         $this->makeAssertionsPerAttempt(
@@ -27,7 +32,7 @@ final class RedisTest extends TestCase
             1,
             $limiterLimit,
             $limiterLimit - 2,
-            millitime() + $limiterWindow,
+            time() + $limiterWindow,
             -1);
     }
 }

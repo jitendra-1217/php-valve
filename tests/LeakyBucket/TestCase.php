@@ -9,10 +9,10 @@ abstract class TestCase extends \Jitendra\PhpValveTests\TestCase
     protected function makeAssertions(LeakyBucket\Base $limiter)
     {
         $resource                = (string) rand(0, 10000);
-        $limiterMaxBucketSize    = $limiter->maxBucketSize();
-        $limiterLeakRateValue    = $limiter->leakRateValue();
-        $limiterLeakRateDuration = $limiter->leakRateDuration();
-        $limiterLeakFullTime     = $limiter->leakFullTime();
+        $limiterMaxBucketSize    = $limiter->getMaxBucketSize();
+        $limiterLeakRateValue    = $limiter->getLeakRateValue();
+        $limiterLeakRateDuration = $limiter->getLeakRateDuration();
+        $limiterLeakFullTime     = $limiter->getLeakFullTime();
 
         // First many attempts up to burst limit must be allowed
         foreach (range(1, $limiterMaxBucketSize) as $i)
@@ -24,7 +24,7 @@ abstract class TestCase extends \Jitendra\PhpValveTests\TestCase
                 1,
                 $limiterMaxBucketSize,
                 $limiterMaxBucketSize - $i,
-                millitime() + $limiterLeakFullTime,
+                time() + $limiterLeakFullTime,
                 -1);
         }
 
@@ -36,11 +36,11 @@ abstract class TestCase extends \Jitendra\PhpValveTests\TestCase
             0,
             $limiterMaxBucketSize,
             0,
-            millitime() + $limiterLeakFullTime,
-            millitime() + $limiterLeakRateDuration);
+            time() + $limiterLeakFullTime,
+            time() + $limiterLeakRateDuration);
 
         // Sleeping for while will leak and allow for new requests
-        sleep($limiterLeakRateDuration/1000);
+        sleep($limiterLeakRateDuration);
         $this->makeAssertionsPerAttempt(
             $limiter,
             $resource,
@@ -48,7 +48,7 @@ abstract class TestCase extends \Jitendra\PhpValveTests\TestCase
             1,
             $limiterMaxBucketSize,
             $limiterLeakRateValue - 1,
-            millitime() + $limiterLeakFullTime,
+            time() + $limiterLeakFullTime,
             -1);
     }
 }

@@ -15,10 +15,7 @@
         "psr-4": {
             "Jitendra\\PhpValve\\": "src/",
             "Jitendra\\PhpValveTests\\": "tests/"
-        },
-        "files": [
-            "lib/helpers.php"
-        ]
+        }
     },
     "require-dev": {
         "phpunit/phpunit": "^6.5"

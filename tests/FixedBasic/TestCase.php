@@ -9,8 +9,8 @@ abstract class TestCase extends \Jitendra\PhpValveTests\TestCase
     protected function makeAssertions(FixedBasic\Base $limiter)
     {
         $resource      = (string) rand(0, 10000);
-        $limiterLimit  = $limiter->limit();
-        $limiterWindow = $limiter->window();
+        $limiterLimit  = $limiter->getLimit();
+        $limiterWindow = $limiter->getWindow();
 
         // All attempts up to $limiterLimit withing current window must pass
         foreach (range(1, $limiterLimit) as $i)
@@ -22,7 +22,7 @@ abstract class TestCase extends \Jitendra\PhpValveTests\TestCase
                 1,
                 $limiterLimit,
                 $limiterLimit - $i,
-                millitime() + $limiterWindow,
+                time() + $limiterWindow,
                 -1);
         }
 
@@ -34,11 +34,11 @@ abstract class TestCase extends \Jitendra\PhpValveTests\TestCase
             0,
             $limiterLimit,
             0,
-            millitime() + $limiterWindow,
-            millitime() + $limiterWindow);
+            time() + $limiterWindow,
+            time() + $limiterWindow);
 
         // Once new window kicks in, new attempt must pass
-        sleep($limiterWindow/1000);
+        sleep($limiterWindow);
         $this->makeAssertionsPerAttempt(
             $limiter,
             $resource,
@@ -46,7 +46,7 @@ abstract class TestCase extends \Jitendra\PhpValveTests\TestCase
             1,
             $limiterLimit,
             $limiterLimit - 1,
-            millitime() + $limiterWindow,
+            time() + $limiterWindow,
             -1);
     }
 }

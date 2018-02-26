@@ -11,12 +11,12 @@ interface Limiter
      * - Allowed or not?
      * - X-RateLimit-Limit
      * - X-RateLimit-Remaining
-     * - X-RateLimit-Reset (in milliseconds)
+     * - X-RateLimit-Reset
      * - X-RateLimit-RetryAfter
      *
      * @param  string      $resource
-     * @param  int|integer $worth
+     * @param  int|integer $cost
      * @return array
      */
-    public function attempt(string $resource, int $worth = 1): array;
+    public function attempt(string $resource, int $cost): array;
 }

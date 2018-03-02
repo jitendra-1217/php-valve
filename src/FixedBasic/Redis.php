@@ -20,20 +20,20 @@ class Redis extends Base
         $this->redis = $redis ?: new \Predis\Client;
     }
 
-    public function attempt(string $resource, int $worth = 1): Response
+    public function attempt(string $resource, int $cost = 1): Response
     {
         $args = [
             file_get_contents(__DIR__ . '/redis.lua'),
             1,
             $this->prefix . $resource,
             $this->window,
-            $worth,
+            $cost,
         ];
 
         list($hits, $ttl) = $this->redis->eval(...$args);
 
         // Following logic could easily be offloaded to LUA script below
-        $allowed    = intval($hits <= $this->limit);
+        $allowed    = $hits <= $this->limit;
         $remaining  = max(0, $this->limit - $hits);
         $reset      = time() + $ttl;
         $retryAfter = $allowed ? -1 : $reset;

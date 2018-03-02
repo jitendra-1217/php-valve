@@ -1,11 +1,11 @@
 -- Gets keys and arguments from command
-local key   = KEYS[1]
-local ttl   = tonumber(ARGV[1])
-local worth = tonumber(ARGV[2])
+local key = KEYS[1]
+local ttl = tonumber(ARGV[1])
+local cost = tonumber(ARGV[2])
 
--- Increments the key and if it was first time, issues setex command
-local hits = tonumber(redis.call('incrby', key, worth))
-if hits == worth then
+-- Increments the key and if it was first time then issues expire command
+local hits = tonumber(redis.call('incrby', key, cost))
+if hits == cost then
     redis.call('expire', key, ttl)
 else
     -- By default remaining window(i.e. ttl) is the input provided else we get

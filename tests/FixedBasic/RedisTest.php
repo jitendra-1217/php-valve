@@ -19,14 +19,14 @@ final class RedisTest extends TestCase
         $this->makeAssertions($limiter);
     }
 
-    public function testFixedBasicWithNonDefaultWorth()
+    public function testFixedBasicWithNonDefaultCost()
     {
         $limiter       = new FixedBasic\Redis(1, 10);
         $limiterLimit  = $limiter->getLimit();
         $limiterWindow = $limiter->getWindow();
         $resource      = (string) rand(0, 10000);
 
-        $expected = new Response(1, $limiterLimit, $limiterLimit - 2, time() + $limiterWindow, -1);
+        $expected = new Response(true, $limiterLimit, $limiterLimit - 2, time() + $limiterWindow, -1);
         $this->attemptAndAssert($limiter, $resource, 2, $expected);
     }
 }

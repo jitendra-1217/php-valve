@@ -18,17 +18,17 @@ abstract class TestCase extends \Jitendra\PhpValveTests\TestCase
         // First many attempts up to burst limit must be allowed
         foreach (range(1, $limiterMaxBucketSize) as $i)
         {
-            $expected = new Response(1, $limiterMaxBucketSize, $limiterMaxBucketSize - $i,  time() + $limiterLeakFullTime, -1);
+            $expected = new Response(true, $limiterMaxBucketSize, $limiterMaxBucketSize - $i,  time() + $limiterLeakFullTime, -1);
             $this->attemptAndAssert($limiter, $resource, 1, $expected);
         }
 
-        // Subsequent attempts must fail withing current leak duration
-        $expected = new Response(0, $limiterMaxBucketSize,  0,  time() + $limiterLeakFullTime,  time() + $limiterLeakRateDuration);
+        // Subsequent attempts must fail within current leak duration
+        $expected = new Response(false, $limiterMaxBucketSize,  0,  time() + $limiterLeakFullTime,  time() + $limiterLeakRateDuration);
         $this->attemptAndAssert($limiter, $resource, 1, $expected);
 
         // Sleeping for while will leak and allow for new requests
         sleep($limiterLeakRateDuration);
-        $expected = new Response(1, $limiterMaxBucketSize, $limiterLeakRateValue - 1,  time() + $limiterLeakFullTime, -1);
+        $expected = new Response(true, $limiterMaxBucketSize, $limiterLeakRateValue - 1,  time() + $limiterLeakFullTime, -1);
         $this->attemptAndAssert($limiter, $resource, 1, $expected);
     }
 }

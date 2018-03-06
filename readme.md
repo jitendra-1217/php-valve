@@ -16,7 +16,7 @@ composer require jitendra/php-valve
 // Instantiate limiter that allows 200 attempts per minute.
 // Optionally pass custom \Predis\Client client.
 $limiter = new \Jitendra\PhpValve\FixedBasic\Redis(60000, 200);
-// Attempts passed resource, Optionally pass worth value.
+// Attempts passed resource, Optionally pass cost value.
 $limiter->attempt('ip:resource');
 
 // [

@@ -10,10 +10,10 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     protected function attemptAndAssert(
         Contracts\Limiter $limiter,
         string $resource,
-        int $worth,
+        int $cost,
         Response $expected)
     {
-        $actual = $limiter->attempt($resource, $worth);
+        $actual = $limiter->attempt($resource, $cost);
         $this->assertEquals($expected, $actual);
     }
 }

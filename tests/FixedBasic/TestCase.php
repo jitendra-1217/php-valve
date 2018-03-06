@@ -16,17 +16,17 @@ abstract class TestCase extends \Jitendra\PhpValveTests\TestCase
         // All attempts up to $limiterLimit withing current window must pass
         foreach (range(1, $limiterLimit) as $i)
         {
-            $expected = new Response(1, $limiterLimit, $limiterLimit - $i, time() + $limiterWindow, -1);
+            $expected = new Response(true, $limiterLimit, $limiterLimit - $i, time() + $limiterWindow, -1);
             $this->attemptAndAssert($limiter, $resource, 1, $expected);
         }
 
         // Subsequent attempt in current window must fail
-        $expected = new Response(0, $limiterLimit, 0, time() + $limiterWindow, time() + $limiterWindow);
+        $expected = new Response(false, $limiterLimit, 0, time() + $limiterWindow, time() + $limiterWindow);
         $this->attemptAndAssert($limiter, $resource, 1, $expected);
 
         // Once new window kicks in, new attempt must pass
         sleep($limiterWindow);
-        $expected = new Response(1, $limiterLimit, $limiterLimit - 1, time() + $limiterWindow, -1);
+        $expected = new Response(true, $limiterLimit, $limiterLimit - 1, time() + $limiterWindow, -1);
         $this->attemptAndAssert($limiter, $resource, 1, $expected);
     }
 }

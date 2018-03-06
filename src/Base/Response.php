@@ -2,9 +2,7 @@
 
 namespace Jitendra\PhpValve\Base;
 
-use Jitendra\PhpValve\Contracts;
-
-class Response implements Contracts\Response
+class Response
 {
     /**
      * @var bool
